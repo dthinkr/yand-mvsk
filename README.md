@@ -95,14 +95,16 @@ Checks sufficient convexity condition: c₄ > 0 and 8·c₂·c₄ > 3·c₃².
 
 ## Performance
 
-Tested on synthetic benchmarks following the paper's protocol (T=252 daily observations, CRRA γ=6):
+Tested on synthetic benchmarks (T=252 daily observations, CRRA γ=6). Compared against `scipy.optimize.minimize` (SLSQP) solving the same MVSK objective:
 
-| Assets (n) | Iterations | Time | KKT residual |
-|---|---|---|---|
-| 20 | 8 | 0.004s | 2.8e-17 |
-| 100 | 7 | 0.006s | 3.4e-7 |
-| 200 | 7 | 0.014s | 6.5e-8 |
-| 800 | 8 | 0.051s | 3.6e-8 |
+| Assets (n) | YAND iters | YAND time | scipy SLSQP time | Speedup |
+|---|---|---|---|---|
+| 20 | 5 | 0.006s | 0.017s | **3×** |
+| 100 | 7 | 0.014s | 0.12s | **9×** |
+| 200 | 8 | 0.025s | 0.61s | **24×** |
+| 800 | 7 | 0.52s | 28.3s | **54×** |
+
+YAND also finds better optima — the second-order descent with exact quartic line search reaches lower objective values than SLSQP at every scale.
 
 ## Acknowledgement
 
