@@ -5,7 +5,7 @@
 Markowitz gave us mean-variance. But financial returns have fat tails and asymmetry: the 2008 crash, the COVID drop, the meme stock spikes. YAND-MVSK optimizes across all four statistical moments, so your portfolio accounts for tail risk that traditional optimizers ignore. It solves in 5-10 iterations even for 800+ assets.
 
 <p align="center">
-  <img src="docs/hero.png" alt="YAND-MVSK convergence and performance" width="800">
+  <img src="docs/demo.gif" alt="YAND-MVSK optimizer demo" width="850">
 </p>
 
 ## Who is this for?
@@ -138,6 +138,10 @@ Tested on synthetic benchmarks (T=252 daily observations, CRRA γ=6). Compared a
 | 800 | 7 | 0.52s | 28.3s | **54×** |
 
 YAND also finds better optima — the second-order descent with exact quartic line search reaches lower objective values than SLSQP at every scale.
+
+<p align="center">
+  <img src="docs/hero.png" alt="YAND-MVSK convergence across scales" width="800">
+</p>
 
 ## Acknowledgement
 
