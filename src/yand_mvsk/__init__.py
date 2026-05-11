@@ -10,13 +10,17 @@ from yand_mvsk._core import (
     MVSKResult,
     yand_mvsk_solve,
     crra_coefficients,
+    asset_crra_scores,
     check_convexity,
 )
+from yand_mvsk._facade import EfficientMVSK
 
 __all__ = [
+    "EfficientMVSK",
     "MVSKOracle",
     "MVSKResult",
     "yand_mvsk_solve",
     "crra_coefficients",
+    "asset_crra_scores",
     "check_convexity",
 ]

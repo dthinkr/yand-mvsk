@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it and the original paper."
+title: "yand-mvsk: Python implementation of YAND-MVSK portfolio optimization"
+type: software
+authors:
+  - family-names: Wu
+    given-names: Wenbin
+    email: kaliwu@berkeley.edu
+license: MIT
+url: "https://github.com/dthinkr/yand-mvsk"
+repository-code: "https://github.com/dthinkr/yand-mvsk"
+version: "0.2.0"
+date-released: "2026-05-10"
+keywords:
+  - portfolio-optimization
+  - mvsk
+  - higher-moments
+  - skewness
+  - kurtosis
+  - finance
+references:
+  - type: article
+    title: "Yau's Affine-Normal Descent for Large-Scale Unrestricted Higher-Moment Portfolio Optimization"
+    authors:
+      - family-names: Wang
+        given-names: Ya-Juan
+      - family-names: Niu
+        given-names: Yi-Shuai
+      - family-names: Sheshmani
+        given-names: Artan
+      - family-names: Yau
+        given-names: Shing-Tung
+    year: 2026
+    journal: "arXiv preprint arXiv:2604.25378"
+    url: "https://arxiv.org/abs/2604.25378"

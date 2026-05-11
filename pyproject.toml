@@ -1,6 +1,6 @@
 [project]
 name = "yand-mvsk"
-version = "0.1.0"
+version = "0.2.0"
 description = "Second-order portfolio optimizer for mean-variance-skewness-kurtosis (MVSK) via Yau's Affine-Normal Descent"
 readme = "README.md"
 license = "MIT"
@@ -23,6 +23,9 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Mathematics",
 ]
 
+[project.optional-dependencies]
+examples = ["pandas>=2.0", "yfinance>=0.2"]
+
 [project.urls]
 Repository = "https://github.com/dthinkr/yand-mvsk"
 Paper = "https://arxiv.org/abs/2604.25378"
@@ -35,4 +38,5 @@ build-backend = "uv_build"
 dev = [
     "pytest>=8.0",
     "matplotlib>=3.7",
+    "pandas>=2.3.3",
 ]

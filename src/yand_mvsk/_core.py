@@ -54,6 +54,35 @@ class MVSKOracle:
         self._z: Optional[np.ndarray] = None
         self._x_id: Optional[int] = None
 
+    def asset_moments(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """Per-asset (mean, variance, skewness, kurtosis) reusing self.A.
+
+        Returns (mu, var, skew, kurt) each of shape (n,).
+        Skewness and kurtosis are Fisher-standardized (excess kurtosis).
+        """
+        A2 = self.A ** 2
+        m2 = A2.mean(axis=0)
+        m3 = (self.A * A2).mean(axis=0)
+        m4 = (A2 * A2).mean(axis=0)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            skew = m3 / (m2 ** 1.5)
+            kurt = m4 / (m2 ** 2) - 3.0
+        skew[m2 < 1e-30] = 0.0
+        kurt[m2 < 1e-30] = 0.0
+        return self.mu.copy(), m2, skew, kurt
+
+    def asset_scores(self) -> np.ndarray:
+        """Per-asset screening score using standardized moments.
+
+        Computes -c1*mu + c2*var - c3*skew + c4*kurt where skew and kurt
+        are Fisher-standardized (not raw central moments as in the solver
+        objective). Useful for ranking/filtering assets, not for exact
+        objective comparison. Lower is better.
+        """
+        mu, var, skew, kurt = self.asset_moments()
+        c1, c2, c3, c4 = self.c
+        return -c1 * mu + c2 * var - c3 * skew + c4 * kurt
+
     def _ensure_z(self, x: np.ndarray):
         xid = id(x)
         if self._x_id != xid:
@@ -502,6 +531,26 @@ def crra_coefficients(gamma: float) -> np.ndarray:
         gamma * (gamma + 1) / 6.0,
         gamma * (gamma + 1) * (gamma + 2) / 24.0,
     ])
+
+
+def asset_crra_scores(R: np.ndarray, gamma: float) -> np.ndarray:
+    """Per-asset CRRA score from return matrix. Lower = more preferred.
+
+    Combines mean, variance, skewness, kurtosis using CRRA coefficients.
+    Useful for screening/ranking assets before portfolio optimization.
+
+    Parameters
+    ----------
+    R : (T, n) return matrix.
+    gamma : CRRA risk aversion parameter.
+
+    Returns
+    -------
+    scores : (n,) array. Lower is better.
+    """
+    c = crra_coefficients(gamma)
+    oracle = MVSKOracle(R, c)
+    return oracle.asset_scores()
 
 
 def check_convexity(c: np.ndarray) -> bool:

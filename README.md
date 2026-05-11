@@ -28,16 +28,30 @@ uv add yand-mvsk
 ```
 
 ```python
+import yfinance as yf
+from yand_mvsk import EfficientMVSK
+
+prices = yf.download(["SPY", "QQQ", "TLT", "GLD"], start="2020-01-01")["Close"]
+
+ef = EfficientMVSK.from_prices(prices, gamma=6)
+weights = ef.optimize()
+cleaned = ef.clean_weights()
+ef.portfolio_performance(verbose=True)
+# Expected annual return:   12.34%
+# Annual volatility:         8.91%
+# Sharpe ratio:              1.385
+# Skewness:                  0.142
+# Excess kurtosis:           1.023
+```
+
+Or with raw numpy arrays:
+
+```python
 import numpy as np
 from yand_mvsk import yand_mvsk_solve, crra_coefficients
 
-# Your return matrix: T observations x n assets
 R = np.random.default_rng(42).standard_normal((504, 50)) * 0.02
-
-# Solve: 3 lines, done
 result = yand_mvsk_solve(R, crra_coefficients(gamma=6))
-
-print(result.x[:5])       # portfolio weights
 print(result.converged)    # True
 print(result.n_iter)       # typically 5-10
 ```
@@ -55,6 +69,25 @@ The solver never builds O(n³) coskewness tensors or O(n⁴) cokurtosis tensors.
 This means **n=800 solves in 0.05s** on a laptop.
 
 ## API
+
+### `EfficientMVSK` (recommended)
+
+```python
+from yand_mvsk import EfficientMVSK
+
+# From prices (DataFrame or numpy)
+ef = EfficientMVSK.from_prices(prices, gamma=6)
+
+# From returns
+ef = EfficientMVSK(returns_df, gamma=6)
+
+# With custom preference coefficients
+ef = EfficientMVSK(returns, c=np.array([1, 3, 7, 15]))
+
+weights = ef.optimize()           # OrderedDict {ticker: weight}
+cleaned = ef.clean_weights()      # zero out tiny weights, renormalize
+stats = ef.portfolio_performance(verbose=True)  # return, vol, sharpe, skew, kurt
+```
 
 ### `yand_mvsk_solve(R, c, **kwargs) → MVSKResult`
 
